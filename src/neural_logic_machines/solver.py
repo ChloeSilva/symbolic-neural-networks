@@ -9,7 +9,7 @@ from jax import random
 class Solver:
 
     solution = []
-    random_key = random.PRNGKey(0)
+    #random_key = random.PRNGKey(0)
 
     def __init__(self, problem):
         self.problem = problem
@@ -17,7 +17,7 @@ class Solver:
         self.interpreter = interpreter_.Interpreter()
 
     # Trains the neural network and saves the final parametes in solution  
-    def train(self, training_path, learning_rate=1e-2, batch_size=100, num_epochs=1):
+    def train(self, training_path, learning_rate=1e-2, batch_size=100, num_epochs=1, seed=0):
         with open(training_path) as f:
             training_data = [line.strip() for line in f]
     
@@ -25,7 +25,7 @@ class Solver:
         io_tensors = [self.problem.text_to_tensor(i, o) 
                       for i, o in processed_data]
         
-        weights = self.init_weights(self.random_key)
+        weights = self.init_weights(random.PRNGKey(seed))
         # weights = [[(jnp.zeros(w.shape), jnp.zeros(b.shape)) for w, b in l] for l in weights]
         # weights[0][2] = weights[0][2][0].at[(3, 0)].set(0.5), weights[0][2][1].at[3].set(-0.5)
         # weights[0][2] = weights[0][2][0].at[(3, 5)].set(0.5), weights[0][2][1]
