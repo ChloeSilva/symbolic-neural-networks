@@ -4,14 +4,14 @@ import neural_logic_machines.architecture as architecture
 
 class TestArchitecture(unittest.TestCase):
 
-    sut = architecture.Architecture()
+    #sut = architecture.Architecture()
 
     def test_permute_unary(self):
         # Given
         predicates = jnp.array([[1, 0, 0, 0]])
 
         # When
-        result = self.sut.permute_predicate(predicates)
+        result = architecture.permute_predicate(predicates)
 
         # Then
         self.assertTrue((result == jnp.array([[1, 0, 0, 0]])).all())
@@ -24,7 +24,7 @@ class TestArchitecture(unittest.TestCase):
                            [0, 0, 0, 1]]])
         
         # When
-        result = self.sut.permute_predicate(predicates)
+        result = architecture.permute_predicate(predicates)
 
         # Then
         self.assertTrue(
@@ -43,7 +43,7 @@ class TestArchitecture(unittest.TestCase):
         predicates = jnp.array([[0, 1, 0, 1], [0, 0, 1, 1]])
 
         # When
-        result = self.sut.expand(predicates)
+        result = architecture.expand(predicates)
 
         # Then
         self.assertTrue(
@@ -69,7 +69,7 @@ class TestArchitecture(unittest.TestCase):
                                 [0, 0, 0, 0]]])
 
         # When
-        result = self.sut.reduce(predicates)
+        result = architecture.reduce(predicates)
 
         # Then
         self.assertTrue((result ==
@@ -103,7 +103,7 @@ class TestArchitecture(unittest.TestCase):
                              [0, 0, 0, 0]]])]
 
         # When
-        result = self.sut.predict_nlm(weights, facts)
+        result = architecture.predict_nlm(weights, facts)
 
         # Then
         self.assertTrue(result[0].size == 0)
@@ -175,7 +175,7 @@ class TestArchitecture(unittest.TestCase):
                              [0, 0, 1, 0]]])]
 
         # When
-        result = self.sut.predict_nlm(weights, facts)
+        result = architecture.predict_nlm(weights, facts)
 
         # Then
         self.assertTrue(result[0].size == 0)
@@ -239,10 +239,10 @@ class TestArchitecture(unittest.TestCase):
         
         # When
         for _ in range(300):
-            weights = self.sut.update(weights, facts, target_facts, learning_rate)
+            weights = architecture.update(weights, facts, target_facts, learning_rate)
 
         # Then
-        self.assertTrue((target_facts[2] == jnp.round(self.sut.predict_nlm(weights, facts)[2])).all())
+        self.assertTrue((target_facts[2] == jnp.round(architecture.predict_nlm(weights, facts)[2])).all())
 
 if __name__ == '__main__':
     unittest.main()

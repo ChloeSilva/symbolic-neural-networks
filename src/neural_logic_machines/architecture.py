@@ -77,13 +77,21 @@ def predict_nlm(weights: list[jnp.ndarray], facts: list[jnp.ndarray]) -> list[jn
 
     return [jnp.maximum(0, big_fact) for big_fact in big_facts]
 
-batched_predict_nlm = vmap(predict_nlm, in_axes=(None, 0))
-
+# batched_predict_nlm = vmap(predict_nlm, in_axes=(None, 0))
+def batched_predict_nlm(weights, x):
+    return [predict_nlm(weights, example) for example in x]
 
 def loss(weights, x, y):
     prediction = batched_predict_nlm(weights, x)
-    temp = [-jnp.mean((p-y)*(p-y)) for p, y in zip(prediction, y)]
-    return sum(temp) / len(temp)
+    temp = [[-jnp.mean((pa-ya)*(pa-ya)) for pa, ya in zip(p, y)]
+             for p, y in zip(prediction, y)]
+    return jnp.mean(jnp.array([sum(t) / len(t) for t in temp]))
+    # prediction = predict_nlm(weights, x)
+    # print(f'prediction: {prediction}')
+    # temp = [-jnp.mean((p-y)*(p-y)) for p, y in zip(prediction, y)]
+    # print(f'temp: {temp}')
+    # print(f'sum(temp)/len(temp): {sum(temp) / len(temp)}')
+    # return sum(temp) / len(temp)
 
 def new_weights(learning_rate, w, b, dw, db):
         if len(w) == 0:
@@ -93,10 +101,6 @@ def new_weights(learning_rate, w, b, dw, db):
 #@partial(jit, static_argnums=(0,))
 @jit
 def update(weights, x, y, learning_rate):
-    for example in x:
-        print(f'len(example): {len(example)}')
-        for arity in example:
-            print(f'arity shape: {jnp.shape(arity)}')
     grads = grad(loss)(weights, x, y)
     return [[new_weights(learning_rate, w, b, dw, db) for ((w, b), (dw, db)) 
                 in zip(lw, lg)] for lw, lg in zip(weights, grads)]

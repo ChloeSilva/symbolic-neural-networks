@@ -65,7 +65,7 @@ class Solver:
         
         correct = 0
         for i, expected_o in  io_tensors:
-            o = architecture.predict_nlm(self.solution[iter], i)
+            o = architecture.predict_nlm(self.solution, i)
             o = [jnp.where(o > threshold, 1.0, 0.0) for o in o]
             if all([jnp.array_equal(a, b) for a, b in zip(o, expected_o)]):
                 correct += 1

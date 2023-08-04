@@ -11,8 +11,8 @@ problem_1 = problem.Problem(
 def main():
     nlm  = solver.NLM(problem_1, depth=1)
     nlm.train('src/data/family_tree/training_1.txt', learning_rate=1, 
-              batch_size=100, num_epochs=5)
-    accuracy = nlm.test('src/data/family_tree/test_1.txt', threshold=0.9, iterations=1)
+              batch_size=100, num_epochs=100)
+    accuracy = nlm.test('src/data/family_tree/test_1.txt', threshold=0.9)
     #program = nlm.interpret(threshold=0.9)
     program = 'placeholder'
 
