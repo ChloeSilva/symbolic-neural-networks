@@ -10,8 +10,8 @@ problem_2 = problem.Problem(
 
 def main():
     nlm = solver.NLM(problem_2, depth=2)
-    # nlm.train('src/data/family_tree/training_2.txt', learning_rate=1, 
-    #         batch_size=50, num_epochs=5000)
+    nlm.train('src/data/family_tree/training_2.txt', learning_rate=1, 
+            batch_size=50, num_epochs=5000)
     accuracy = nlm.test('src/data/family_tree/test_2.txt', threshold=0.9)
     #program = nlm.interpret(threshold=0.9)
     program = 'placeholder'
