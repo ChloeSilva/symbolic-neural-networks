@@ -16,7 +16,7 @@ class Solver:
         self.interpreter = interpreter_.Interpreter()
 
     # Trains the neural network and saves the final parametes in solution  
-    def train(self, training_path, learning_rate=1e-2, batch_size=100, num_epochs=1, seed=0):
+    def train(self, training_path, learning_rate=1e-2, batch_size=100, num_epochs=1):
         with open(training_path) as f:
             training_data = [line.strip() for line in f]
     
@@ -24,12 +24,12 @@ class Solver:
         io_tensors = [self.problem.text_to_tensor(i, o) 
                       for i, o in processed_data]
         
-        weights = self.init_weights(random.PRNGKey(seed))
+        weights = self.init_weights(random.PRNGKey(0))
         weights = [[(jnp.zeros(w.shape), jnp.zeros(b.shape)) for w, b in l] for l in weights]
-        weights[0][2] = weights[0][2][0].at[(4, 0)].set(0.9), weights[0][2][1].at[4].set(-9)
+        weights[0][2] = weights[0][2][0].at[(4, 0)].set(0.9), weights[0][2][1].at[4].set(-0.9)
         weights[0][2] = weights[0][2][0].at[(4, 5)].set(0.9), weights[0][2][1]
 
-        weights[1][2] = weights[0][2][0].at[(4, 0)].set(0.9), weights[1][2][1].at[4].set(-9)
+        weights[1][2] = weights[0][2][0].at[(4, 0)].set(0.9), weights[1][2][1].at[4].set(-0.9)
         weights[1][2] = weights[0][2][0].at[(4, 7)].set(0.9), weights[1][2][1]
 
         for epoch in range(num_epochs):

@@ -192,7 +192,7 @@ class TestArchitecture(unittest.TestCase):
                                                  [[0, 1, 0, 0],
                                                   [1, 0, 0, 0],
                                                   [0, 0, 0, 1],
-                                                  [0, 0, 1, 0]]])).all())  
+                                                  [0, 0, 1, 0]]])).all())
 
     def test_update(self):
         # Given

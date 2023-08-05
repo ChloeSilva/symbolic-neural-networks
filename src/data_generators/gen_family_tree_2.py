@@ -24,7 +24,7 @@ def generate_examples(num_examples, path):
                         in_ += f'female({names[i]}).\n'
                     else:
                         gender_flag = True
-                        in_ += f'male({names[i]})\n'
+                        in_ += f'male({names[i]}).\n'
 
                 if i >= num_objects//2:
                     continue
