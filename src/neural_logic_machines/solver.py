@@ -9,11 +9,9 @@ from jax import random
 class Solver:
 
     solution = []
-    #random_key = random.PRNGKey(0)
 
     def __init__(self, problem):
         self.problem = problem
-        #self.arch = architecture.Architecture()
         self.interpreter = interpreter_.Interpreter()
 
     # Trains the neural network and saves the final parametes in solution  
@@ -26,19 +24,15 @@ class Solver:
                       for i, o in processed_data]
         
         weights = self.init_weights(random.PRNGKey(seed))
-        # weights = [[(jnp.zeros(w.shape), jnp.zeros(b.shape)) for w, b in l] for l in weights]
-        # weights[0][2] = weights[0][2][0].at[(3, 0)].set(0.5), weights[0][2][1].at[3].set(-0.5)
-        # weights[0][2] = weights[0][2][0].at[(3, 5)].set(0.5), weights[0][2][1]
+        weights = [[(jnp.zeros(w.shape), jnp.zeros(b.shape)) for w, b in l] for l in weights]
 
         for epoch in range(num_epochs):
-            start_time = time.time()
             for i, o in self.get_batches(io_tensors, batch_size):
                 weights = architecture.update(weights, i, o, learning_rate)
                 print(f'nullary: {weights[0][0]}')
                 print(f'unary: {weights[0][1]}')
                 print(f'binary: {weights[0][2]}')
                 print(f'epoch: {epoch}')
-            #epoch_time = time.time() - start_time
     
         self.solution = weights
     

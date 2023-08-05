@@ -59,7 +59,6 @@ def generate_examples(num_examples, path):
 							in_ += f'son({child}, {parent}).\n'
 
 			f.write('in:\n'+in_+'\nout:\n'+in_+out+'\n')
-	f.close()
 	
 def main():
 	generate_examples(training_examples, 'src/data/family_tree/training_1.txt')

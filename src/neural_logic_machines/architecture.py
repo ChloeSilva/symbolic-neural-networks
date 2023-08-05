@@ -1,10 +1,7 @@
 from itertools import permutations
-from functools import partial
 
 import jax.numpy as jnp
-from jax import grad, jit, vmap
-
-#class Architecture():
+from jax import grad, jit
 
 def generate_permutations(n: int) -> list[tuple[int, ...]]:
     return list(permutations(range(n)))
@@ -43,18 +40,12 @@ def expand_and_reduce(facts: list[jnp.ndarray]) -> list[jnp.ndarray]:
 # If we also expand/reduce the outputs we can save an auxillary
 # predicate with 'non matching' variables
 def predict_nlm(weights: list[jnp.ndarray], facts: list[jnp.ndarray]) -> list[jnp.ndarray]:
-    #print(f'predicting')
-    # print(f'weights: {weights}')
-    # print(f'facts: {facts}')
     num_pred = [len(fact) for fact in facts]
     big_facts = facts
     for layer in weights:
-        #print('processing layer')
         big_facts = expand_and_reduce(big_facts)
         new_facts = []
         for arity in range(len(layer)):
-            #print('processing arity')
-            #print(f'big_facts: {big_facts}')
             if len(layer[arity][0]) == 0:
                 new_facts.append(facts[arity])
                 continue
@@ -62,7 +53,6 @@ def predict_nlm(weights: list[jnp.ndarray], facts: list[jnp.ndarray]) -> list[jn
             perm = permute_predicate(big_facts[arity])
             ts = tuple(range(1, arity)) + (0, arity)
             if arity == 0: ts = (0, )
-            #print(f'perm: {perm}, ts:\n{ts}')
             applied = jnp.dot(w,  jnp.transpose(perm, ts))
             # maybe add sigmoid to p+b
             outputs = [jnp.maximum(p+b, i) 
@@ -77,7 +67,6 @@ def predict_nlm(weights: list[jnp.ndarray], facts: list[jnp.ndarray]) -> list[jn
 
     return [jnp.maximum(0, big_fact) for big_fact in big_facts]
 
-# batched_predict_nlm = vmap(predict_nlm, in_axes=(None, 0))
 def batched_predict_nlm(weights, x):
     return [predict_nlm(weights, example) for example in x]
 
@@ -86,19 +75,12 @@ def loss(weights, x, y):
     temp = [[-jnp.mean((pa-ya)*(pa-ya)) for pa, ya in zip(p, y)]
              for p, y in zip(prediction, y)]
     return jnp.mean(jnp.array([sum(t) / len(t) for t in temp]))
-    # prediction = predict_nlm(weights, x)
-    # print(f'prediction: {prediction}')
-    # temp = [-jnp.mean((p-y)*(p-y)) for p, y in zip(prediction, y)]
-    # print(f'temp: {temp}')
-    # print(f'sum(temp)/len(temp): {sum(temp) / len(temp)}')
-    # return sum(temp) / len(temp)
 
 def new_weights(learning_rate, w, b, dw, db):
         if len(w) == 0:
             return (w, b)
         return (w + learning_rate * dw, b + learning_rate * db)
 
-#@partial(jit, static_argnums=(0,))
 @jit
 def update(weights, x, y, learning_rate):
     grads = grad(loss)(weights, x, y)
